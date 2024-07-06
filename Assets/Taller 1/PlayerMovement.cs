@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded = false;
     private int jumpsLeft;
-    private int maxHealth = 100;
+    public int maxHealth = 5; // Cambio aquí: Ahora maxHealth es pública
     private int currentHealth;
     [SerializeField] float waitToTransition = 1;
     [SerializeField] bool died = false;
@@ -37,9 +38,31 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("SHOOT")]
     bool canShoot = false;
+    bool canShootS = false;
     public GameObject projectilePrefab; // Asigna el prefab del proyectil en el Inspector
+    public GameObject projectilePrefabEscopeta; // Asigna el prefab del proyectil en el Inspector
     public GameObject shootPosition;
     [SerializeField] float shootSpeed;
+
+    // Enum para el estado de la vida
+    public enum HealthState
+    {
+        SinVida,
+        Vida1,
+        Vida2,
+        Vida3,
+        Vida4,
+        Vida5
+        
+    }
+
+    [Header("Health View")]
+    [SerializeField] List<Sprite> healthStateSprite;
+    [SerializeField] Image health;
+
+
+    public HealthState healthState; // Variable para almacenar el estado actual de la vida
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -61,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if(died) return;
+        if (died) return;
         HandleInput();
 
         if (currentHealth <= 0)
@@ -83,6 +106,10 @@ public class PlayerMovement : MonoBehaviour
         {
             PistolaShoot();
         }
+        if (canShootS)
+        {
+            EscopetaShoot();
+        }
     }
 
     private void PistolaShoot()
@@ -97,8 +124,33 @@ public class PlayerMovement : MonoBehaviour
 
             // Configurar la velocidad del proyectil (ejemplo: 10 unidades por segundo hacia la derecha)
             Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-            rb.velocity = new Vector2(shootSpeed * (transform.localScale.x < 0? -1 : 1), 0f); // Puedes ajustar la velocidad según tus necesidades
+            rb.velocity = new Vector2(shootSpeed * (transform.localScale.x < 0 ? -1 : 1), 0f); // Puedes ajustar la velocidad según tus necesidades
         }
+    }
+
+    private void EscopetaShoot()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            // Obtener la posición actual del jugador
+            Vector3 playerPos = shootPosition.transform.position;
+
+            // Instanciar el proyectil en la posición del jugador
+            GameObject projectile = Instantiate(projectilePrefabEscopeta, playerPos, Quaternion.identity);
+
+            // Configurar la velocidad del proyectil (ejemplo: 10 unidades por segundo hacia la derecha)
+            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+            rb.velocity = new Vector2(shootSpeed * (transform.localScale.x < 0 ? -1 : 1), 0f); // Puedes ajustar la velocidad según tus necesidades
+            canShootS = false;
+            Invoke("FreeEscopeta", 1);
+            anim.SetBool("EscopetaShoot", true);
+
+        }
+    }
+
+    public void FreeEscopeta()
+    {
+        canShootS = true;
     }
 
     private void FixedUpdate()
@@ -150,7 +202,17 @@ public class PlayerMovement : MonoBehaviour
     public void Pistola()
     {
         anim.SetBool("Pistola", true);
+        anim.SetBool("Escopeta", false);
         canShoot = true;
+        canShootS = false;
+    }
+
+    public void Escopeta()
+    {
+        anim.SetBool("Pistola", false);
+        anim.SetBool("Escopeta", true);
+        canShootS = true;
+        canShoot = false;
     }
 
     private void HandleAnimation()
@@ -158,6 +220,7 @@ public class PlayerMovement : MonoBehaviour
         if (Mathf.Abs(rb.velocity.x) > 0.1f)
         {
             anim.SetBool("Pistola", false);
+            anim.SetBool("Escopeta", false);
             canShoot = false;
 
             anim.SetBool("IsRunning", true);
@@ -169,9 +232,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (rb.velocity.y >= 0)
         {
-            if(rb.velocity.y > 0) {
+            if (rb.velocity.y > 0)
+            {
                 canShoot = false;
                 anim.SetBool("Pistola", false);
+                anim.SetBool("Escopeta", false);
             }
             anim.SetBool("JumpEnd", false);
         }
@@ -179,6 +244,7 @@ public class PlayerMovement : MonoBehaviour
         {
             canShoot = false;
             anim.SetBool("Pistola", false);
+            anim.SetBool("Escopeta", false);
             anim.SetBool("JumpEnd", true);
         }
     }
@@ -193,6 +259,31 @@ public class PlayerMovement : MonoBehaviour
     {
         currentHealth -= damage;
         SetHealth(currentHealth);
+
+
+        switch (currentHealth)
+        {
+            case (int)HealthState.Vida1:
+                health.sprite = healthStateSprite[1];
+                break;
+            case (int)HealthState.Vida2:
+                health.sprite = healthStateSprite[2];
+                break;
+            case (int)HealthState.Vida3:
+                health.sprite = healthStateSprite[3];
+                break;
+            case (int)HealthState.Vida4:
+                health.sprite = healthStateSprite[4];
+                break;
+            case (int)HealthState.Vida5:
+                health.sprite = healthStateSprite[5];
+                break;
+            case (int)HealthState.SinVida:
+                health.sprite = healthStateSprite[0];
+                break;
+            default:
+                break;
+        }
 
         if (currentHealth <= 0)
         {
@@ -225,8 +316,9 @@ public class PlayerMovement : MonoBehaviour
     {
         died = true;
         Debug.Log("DIE");
-        anim.SetBool("Die", true);
-        Invoke("ReloadScene",waitToTransition);
+        anim.SetBool("Die", true); 
+
+        Invoke("ReloadScene", waitToTransition);
     }
 
     private void ReloadScene()
@@ -280,3 +372,5 @@ public class PlayerMovement : MonoBehaviour
         damageTimerCounter = 0f; // Reinicia el temporizador cuando se elimina el efecto del enemigo
     }
 }
+
+

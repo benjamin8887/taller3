@@ -18,9 +18,9 @@ public class LlaveScript : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             // Cuando el jugador toca la llave, abrir la puerta, reproducir el sonido de la llave y hacer desaparecer la llave
-            puerta.AbrirPuerta();
+            //puerta.AbrirPuerta();
             audioSource.Play(); // Reproducir el sonido de la llave
-            puerta.DesaparecerLlave(); // Desaparecer la llave después de ser recogida
+            //puerta.DesaparecerLlave(); // Desaparecer la llave después de ser recogida
         }
     }
 }

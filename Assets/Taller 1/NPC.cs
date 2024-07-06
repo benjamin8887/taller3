@@ -13,8 +13,12 @@ public class NPC : MonoBehaviour
     public UnityEvent onStartDialog;
     public UnityEvent onEndDialog;
 
+    [SerializeField] Collider2D col;
+    bool isToucingInteractrion;
     void OnTriggerEnter2D(Collider2D other)
     {
+        isToucingInteractrion = other.IsTouching(col);
+
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
@@ -24,6 +28,7 @@ public class NPC : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other)
     {
+        isToucingInteractrion = other.IsTouching(col);
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
@@ -33,7 +38,8 @@ public class NPC : MonoBehaviour
 
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E)) // Define la tecla que el jugador debe presionar para interactuar
+        
+        if (playerInRange && Input.GetKeyDown(KeyCode.E) && isToucingInteractrion) // Define la tecla que el jugador debe presionar para interactuar
         {
             StartEndDialog();
         }
@@ -83,12 +89,12 @@ public class NPC : MonoBehaviour
         if (playerTransform.position.x < transform.position.x)
         {
             // Jugador está a la izquierda del NPC, volteamos hacia la izquierda
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
         else
         {
             // Jugador está a la derecha del NPC, volteamos hacia la derecha
-            transform.localScale = new Vector3(1f, 1f, 1f);
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
     }
 }
