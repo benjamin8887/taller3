@@ -6,18 +6,19 @@ public class NPC : MonoBehaviour
 {
     public string dialogueText = "¡Hola! Soy un NPC.";
     public GameObject dialogueBubblePrefab; // Asigna el Prefab de la burbuja de texto en el Inspector.
+    public Transform playerTransform; // Referencia al transform del jugador
 
     private bool playerInRange = false;
     private GameObject dialogueBubbleInstance;
     public UnityEvent onStartDialog;
     public UnityEvent onEndDialog;
 
-
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
+            playerTransform = other.transform; // Guarda la referencia al transform del jugador
         }
     }
 
@@ -35,6 +36,12 @@ public class NPC : MonoBehaviour
         if (playerInRange && Input.GetKeyDown(KeyCode.E)) // Define la tecla que el jugador debe presionar para interactuar
         {
             StartEndDialog();
+        }
+
+        // Voltear el NPC hacia el jugador
+        if (playerInRange)
+        {
+            FlipTowardsPlayer();
         }
     }
 
@@ -68,6 +75,20 @@ public class NPC : MonoBehaviour
         {
             Destroy(dialogueBubbleInstance);
             dialogueBubbleInstance = null;
+        }
+    }
+
+    void FlipTowardsPlayer()
+    {
+        if (playerTransform.position.x < transform.position.x)
+        {
+            // Jugador está a la izquierda del NPC, volteamos hacia la izquierda
+            transform.localScale = new Vector3(-1f, 1f, 1f);
+        }
+        else
+        {
+            // Jugador está a la derecha del NPC, volteamos hacia la derecha
+            transform.localScale = new Vector3(1f, 1f, 1f);
         }
     }
 }

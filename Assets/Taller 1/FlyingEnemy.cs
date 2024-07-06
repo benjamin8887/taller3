@@ -24,16 +24,16 @@ public class FlyingEnemy : MonoBehaviour
             return;
 
         // Calcula la distancia al jugador
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         // Calcula la dirección al jugador
-        Vector2 directionToPlayer = (player.position - transform.position).normalized;
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
 
-        // Verifica si el jugador está dentro del rango de visión
-        if (distanceToPlayer <= visionRange && Vector2.Angle(Vector2.right, directionToPlayer) <= visionAngle / 2)
+        // Verifica si el jugador está dentro del rango de visión y ángulo de visión
+        if (distanceToPlayer <= visionRange && Vector3.Angle(transform.forward, directionToPlayer) <= visionAngle / 2)
         {
             // Si el jugador también está dentro del rango de ataque
-            if (distanceToPlayer <= attackDistance)
+            if (distanceToPlayer <= attackDistance && Vector3.Angle(transform.forward, directionToPlayer) <= visionAngle / 2)
             {
                 // Atacar al jugador si no está atacando actualmente y el temporizador ha pasado
                 if (!isAttacking && attackTimer <= 0)
@@ -64,7 +64,7 @@ public class FlyingEnemy : MonoBehaviour
         }
     }
 
-    void MoveTowardsPlayer(Vector2 directionToPlayer)
+    void MoveTowardsPlayer(Vector3 directionToPlayer)
     {
         // Mueve el enemigo hacia el jugador
         transform.Translate(directionToPlayer * speed * Time.deltaTime);
