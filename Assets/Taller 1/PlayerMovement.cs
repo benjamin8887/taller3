@@ -222,6 +222,7 @@ public class PlayerMovement : MonoBehaviour
             anim.SetBool("Pistola", false);
             anim.SetBool("Escopeta", false);
             canShoot = false;
+            canShootS = false;
 
             anim.SetBool("IsRunning", true);
         }
@@ -235,6 +236,7 @@ public class PlayerMovement : MonoBehaviour
             if (rb.velocity.y > 0)
             {
                 canShoot = false;
+                canShootS = false;
                 anim.SetBool("Pistola", false);
                 anim.SetBool("Escopeta", false);
             }
@@ -243,6 +245,7 @@ public class PlayerMovement : MonoBehaviour
         else if (rb.velocity.y < 0)
         {
             canShoot = false;
+            canShootS = false;
             anim.SetBool("Pistola", false);
             anim.SetBool("Escopeta", false);
             anim.SetBool("JumpEnd", true);

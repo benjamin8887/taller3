@@ -1,12 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System.Collections;
+
 
 [System.Serializable]
 public class itemAndSprite
 {
     public string name;
     public Sprite sprite;
+    public bool checkDistance;
+    public GameObject otherObject;
+    public GameObject firstObject;
+
     public UnityEvent onClick;
 }
 
@@ -109,12 +115,21 @@ public class InventoryManager : MonoBehaviour
         Sprite sp = null;
         bool ispermanent = false;
         UnityEvent ua = null;
+        
+        bool checkDistance = false;
+        GameObject otherDistance = null;
+        GameObject firstObject = null;
+
+
         for (int i = 0; i < itemSprites.Length; i++)
         {
             if (itemName == itemSprites[i].name)
             {
                 sp = itemSprites[i].sprite;
                 ua = itemSprites[i].onClick;
+                checkDistance = itemSprites[i].checkDistance;
+                otherDistance = itemSprites[i].otherObject;
+                firstObject = itemSprites[i].firstObject;
             }
         }
 
@@ -123,8 +138,11 @@ public class InventoryManager : MonoBehaviour
             if (itemName == itemSprites[i].name)
             {
                 ispermanent = true;
-                sp = itemSprites[i].sprite;
-                ua = itemSprites[i].onClick;
+                sp = permanentItemSprites[i].sprite;
+                ua = permanentItemSprites[i].onClick;
+                checkDistance = itemSprites[i].checkDistance;
+                otherDistance = itemSprites[i].otherObject;
+                firstObject = itemSprites[i].firstObject;
             }
         }
 
@@ -138,12 +156,34 @@ public class InventoryManager : MonoBehaviour
                     Transform item = Instantiate(itemPrefab, inventory.inventorySlots[i].transform.parent);
                     Image img = item.GetComponentInChildren<Image>();
                     Button btn = item.GetComponentInChildren<Button>();
-                    if(ispermanent == false) { 
-                        btn.onClick.AddListener(() => { ua.Invoke(); Destroy(item.gameObject); });
+
+                    GameObject goMe = this.gameObject;
+                    GameObject goOther = otherDistance;
+                    GameObject fromDistance = firstObject;
+                    if (ispermanent == false) { 
+                        btn.onClick.AddListener(() => {
+                            
+                            Debug.Log(fromDistance.transform.position + " " + goOther.transform.position);
+                            Debug.Log(fromDistance.transform.position + " " + otherDistance.transform.position + " " + checkDistance);
+                            if (checkDistance)
+                            {
+                                if(Vector2.Distance(fromDistance.transform.position, otherDistance.transform.position) < 10)
+                                {
+                                    ua.Invoke(); Destroy(item.gameObject);
+                                }
+                            }
+                            else { 
+                                ua.Invoke(); Destroy(item.gameObject);
+                            }
+                        });
                     }
                     else
                     {
-                        btn.onClick.AddListener(() => { ua.Invoke(); });
+                        btn.onClick.AddListener(() => { 
+                            
+                            ua.Invoke(); 
+                            
+                            });
                     }
                     item.position = inventory.inventorySlots[i].transform.position;
                     img.sprite = sp;
@@ -159,6 +199,7 @@ public class InventoryManager : MonoBehaviour
         }
 
     }
+
 
     public void ToggleInventory()
     {
