@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
@@ -13,17 +12,17 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundLayer;
     public Slider slider;
     public GameObject inventoryManagerPrefab;
+    public Animator anim;
 
     private Rigidbody2D rb;
     private bool isGrounded = false;
     private int jumpsLeft;
-    public int maxHealth = 5; // Cambio aquí: Ahora maxHealth es pública
+    public int maxHealth = 5;
     private int currentHealth;
     [SerializeField] float waitToTransition = 1;
     [SerializeField] bool died = false;
     private bool facingRight = true;
     private Vector3 respawnPoint;
-    public Animator anim;
     private InventoryManager inventoryManager;
 
     public float interactionRange = 2f;
@@ -33,18 +32,18 @@ public class PlayerMovement : MonoBehaviour
     private bool isAffectedByEnemy = false;
     private float enemySlowDownFactor;
     private float enemyDamagePerSecond;
-    private float damageTimer = 1f; // Tiempo entre cada aplicación de daño
-    private float damageTimerCounter = 0f; // Contador para controlar el tiempo entre aplicaciones de daño
+    private float damageTimer = 1f;
+    private float damageTimerCounter = 0f;
 
-    [Header("SHOOT")]
+    // SHOOT variables
     bool canShoot = false;
     bool canShootS = false;
-    public GameObject projectilePrefab; // Asigna el prefab del proyectil en el Inspector
-    public GameObject projectilePrefabEscopeta; // Asigna el prefab del proyectil en el Inspector
+    public GameObject projectilePrefab;
+    public GameObject projectilePrefabEscopeta;
     public GameObject shootPosition;
     [SerializeField] float shootSpeed;
 
-    // Enum para el estado de la vida
+    // Enum for health state
     public enum HealthState
     {
         SinVida,
@@ -53,15 +52,23 @@ public class PlayerMovement : MonoBehaviour
         Vida3,
         Vida4,
         Vida5
-        
     }
 
     [Header("Health View")]
     [SerializeField] List<Sprite> healthStateSprite;
     [SerializeField] Image health;
+    public HealthState healthState;
 
+    // Ammo variables
+    public int maxPistolAmmo = 10;
+    public int currentPistolAmmo;
 
-    public HealthState healthState; // Variable para almacenar el estado actual de la vida
+    public int maxShotgunAmmo = 5;
+    public int currentShotgunAmmo;
+
+    // UI Elements
+    public Text pistolAmmoText;
+    public Text shotgunAmmoText;
 
     private void Start()
     {
@@ -70,6 +77,8 @@ public class PlayerMovement : MonoBehaviour
         currentHealth = maxHealth;
         SetMaxHealth(maxHealth);
         respawnPoint = transform.position;
+        currentPistolAmmo = maxPistolAmmo;
+        currentShotgunAmmo = maxShotgunAmmo;
 
         if (inventoryManagerPrefab != null)
         {
@@ -92,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
             Die();
         }
 
-        // Control del temporizador para el daño por segundo del enemigo
+        // Enemy effect timer control
         if (isAffectedByEnemy)
         {
             damageTimerCounter += Time.deltaTime;
@@ -114,37 +123,35 @@ public class PlayerMovement : MonoBehaviour
 
     private void PistolaShoot()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && currentPistolAmmo > 0)
         {
-            // Obtener la posición actual del jugador
             Vector3 playerPos = shootPosition.transform.position;
-
-            // Instanciar el proyectil en la posición del jugador
             GameObject projectile = Instantiate(projectilePrefab, playerPos, Quaternion.identity);
-
-            // Configurar la velocidad del proyectil (ejemplo: 10 unidades por segundo hacia la derecha)
             Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-            rb.velocity = new Vector2(shootSpeed * (transform.localScale.x < 0 ? -1 : 1), 0f); // Puedes ajustar la velocidad según tus necesidades
+            rb.velocity = new Vector2(shootSpeed * (transform.localScale.x < 0 ? -1 : 1), 0f);
+
+            currentPistolAmmo--;
+            Debug.Log("Balas de pistola restantes: " + currentPistolAmmo);
+            UpdateAmmoUI();
         }
     }
 
     private void EscopetaShoot()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && currentShotgunAmmo > 0)
         {
-            // Obtener la posición actual del jugador
             Vector3 playerPos = shootPosition.transform.position;
-
-            // Instanciar el proyectil en la posición del jugador
             GameObject projectile = Instantiate(projectilePrefabEscopeta, playerPos, Quaternion.identity);
-
-            // Configurar la velocidad del proyectil (ejemplo: 10 unidades por segundo hacia la derecha)
             Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-            rb.velocity = new Vector2(shootSpeed * (transform.localScale.x < 0 ? -1 : 1), 0f); // Puedes ajustar la velocidad según tus necesidades
+            rb.velocity = new Vector2(shootSpeed * (transform.localScale.x < 0 ? -1 : 1), 0f);
+
+            currentShotgunAmmo--;
+            Debug.Log("Balas de escopeta restantes: " + currentShotgunAmmo);
+            UpdateAmmoUI();
+
             canShootS = false;
             Invoke("FreeEscopeta", 1);
             anim.SetBool("EscopetaShoot", true);
-
         }
     }
 
@@ -263,7 +270,6 @@ public class PlayerMovement : MonoBehaviour
         currentHealth -= damage;
         SetHealth(currentHealth);
 
-
         switch (currentHealth)
         {
             case (int)HealthState.Vida1:
@@ -319,7 +325,7 @@ public class PlayerMovement : MonoBehaviour
     {
         died = true;
         Debug.Log("DIE");
-        anim.SetBool("Die", true); 
+        anim.SetBool("Die", true);
 
         Invoke("ReloadScene", waitToTransition);
     }
@@ -372,8 +378,13 @@ public class PlayerMovement : MonoBehaviour
     public void RemoveEffect()
     {
         isAffectedByEnemy = false;
-        damageTimerCounter = 0f; // Reinicia el temporizador cuando se elimina el efecto del enemigo
+        damageTimerCounter = 0f;
+    }
+
+    private void UpdateAmmoUI()
+    {
+        // Update UI elements with current ammo counts
+        pistolAmmoText.text = "Pistola: " + currentPistolAmmo.ToString();
+        shotgunAmmoText.text = "Escopeta: " + currentShotgunAmmo.ToString();
     }
 }
-
-

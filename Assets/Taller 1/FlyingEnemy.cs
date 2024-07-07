@@ -2,95 +2,118 @@ using UnityEngine;
 
 public class FlyingEnemy : MonoBehaviour
 {
-    public float speed = 5f; // Velocidad de movimiento hacia el jugador
-    public float attackDistance = 5f; // Distancia a la que el enemigo atacará al jugador
-    public float visionRange = 10f; // Rango de visión del enemigo
-    public float visionAngle = 90f; // Ángulo de visión del enemigo (ahora es 90 grados para visión en todos los lados)
-    public int damage = 25; // Daño que hace el enemigo al jugador
+    public float moveSpeed = 5f;  // Velocidad de movimiento del enemigo
+    public int damageAmount = 1;  // Daño que hace el enemigo al jugador por golpe
+    public int maxHealth = 100;    // Vida máxima del enemigo
 
-    private Transform player;
-    private bool isAttacking = false;
-    private float attackCooldown = 2f; // Tiempo de enfriamiento entre ataques
-    private float attackTimer = 0f; // Contador para controlar el tiempo entre ataques
+    private int currentHealth;    // Vida actual del enemigo
+
+    private Transform player;     // Referencia al jugador
+    private Rigidbody2D rb;       // Rigidbody del enemigo
+    private SpriteRenderer spriteRenderer; // Componente SpriteRenderer del enemigo
+
+    private ScoreManager scoreManager; // Referencia al ScoreManager
+    public int scoreValue = 10; // Puntos que otorga al ser eliminado
+    public float visionRange = 5f; // Rango de visión para detectar al jugador
 
     void Start()
     {
+        currentHealth = maxHealth;
+        rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Obtener el componente SpriteRenderer
+        scoreManager = FindObjectOfType<ScoreManager>(); // Buscar el ScoreManager en la escena
+
+        if (scoreManager == null)
+        {
+            Debug.LogError("ScoreManager no encontrado en la escena.");
+        }
     }
 
     void Update()
     {
-        if (player == null)
-            return;
-
-        // Calcula la distancia al jugador
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        // Calcula la dirección al jugador
-        Vector3 directionToPlayer = (player.position - transform.position).normalized;
-
-        // Verifica si el jugador está dentro del rango de visión y ángulo de visión
-        if (distanceToPlayer <= visionRange && Vector3.Angle(transform.forward, directionToPlayer) <= visionAngle / 2)
+        // Mover hacia el jugador si está dentro del rango de visión
+        if (player != null && IsPlayerInVision())
         {
-            // Si el jugador también está dentro del rango de ataque
-            if (distanceToPlayer <= attackDistance && Vector3.Angle(transform.forward, directionToPlayer) <= visionAngle / 2)
-            {
-                // Atacar al jugador si no está atacando actualmente y el temporizador ha pasado
-                if (!isAttacking && attackTimer <= 0)
-                {
-                    AttackPlayer();
-                    attackTimer = attackCooldown;
-                }
-            }
-            else
-            {
-                // Mover hacia el jugador si no está atacando
-                if (!isAttacking)
-                {
-                    MoveTowardsPlayer(directionToPlayer);
-                }
-            }
+            Vector2 moveDirection = (player.position - transform.position).normalized;
+            rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+
+            // Voltear el sprite según la dirección del movimiento
+            FlipSprite(moveDirection.x);
         }
         else
         {
-            // Si el jugador está fuera del rango de visión, no atacar
-            isAttacking = false;
+            rb.velocity = Vector2.zero; // Detener el movimiento si el jugador no está dentro del rango
         }
+    }
 
-        // Actualiza el temporizador de ataque
-        if (attackTimer > 0)
+    bool IsPlayerInVision()
+    {
+        // Calcula la distancia al jugador
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        return distanceToPlayer <= visionRange;
+    }
+
+    void FlipSprite(float moveDirectionX)
+    {
+        if (moveDirectionX > 0) // Movimiento hacia la derecha
         {
-            attackTimer -= Time.deltaTime;
+            spriteRenderer.flipX = false; // Restaurar la orientación normal del sprite
         }
-    }
-
-    void MoveTowardsPlayer(Vector3 directionToPlayer)
-    {
-        // Mueve el enemigo hacia el jugador
-        transform.Translate(directionToPlayer * speed * Time.deltaTime);
-    }
-
-    void AttackPlayer()
-    {
-        // Implementa aquí tu lógica de ataque al jugador
-        // Por ejemplo, podrías reducir la salud del jugador o activar algún efecto de daño
-
-        // Aquí se asume que el jugador tiene un script de salud (Health) que podemos llamar
-        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
-        if (playerMovement != null)
+        else if (moveDirectionX < 0) // Movimiento hacia la izquierda
         {
-            playerMovement.TakeDamage(damage);
+            spriteRenderer.flipX = true; // Invertir el sprite horizontalmente
         }
-
-        // Marca como atacando para evitar ataques repetidos
-        isAttacking = true;
-
-        // Después de un tiempo, deja de atacar (por ejemplo, espera unos segundos)
-        Invoke("StopAttacking", 2f);
+        // No es necesario hacer nada si moveDirectionX == 0 porque ya mantendría la orientación actual del sprite
     }
 
-    void StopAttacking()
+    void OnTriggerEnter2D(Collider2D other)
     {
-        isAttacking = false;
+        // Verificar si ha chocado con el jugador
+        if (other.CompareTag("Player"))
+        {
+            // Obtener la posición relativa entre el enemigo y el jugador
+            Vector2 relativePosition = other.transform.position - transform.position;
+
+            // Si la posición relativa en Y es positiva (el jugador está encima del enemigo)
+            if (relativePosition.y > 0)
+            {
+                Die(); // Llamar al método Die para que el enemigo muera al ser pisado desde arriba
+            }
+            else
+            {
+                // Obtener el componente de salud del jugador (esto depende de cómo esté implementado en tu juego)
+                PlayerMovement playerMovement = other.GetComponent<PlayerMovement>();
+
+                // Si el componente de salud existe, hacer daño al jugador
+                if (playerMovement != null)
+                {
+                    playerMovement.TakeDamage(damageAmount);
+                }
+            }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        // Aquí puedes agregar la lógica para la muerte del enemigo, como reproducir una animación, 
+        // reproducir un efecto de sonido, otorgar puntos al jugador, etc.
+        Debug.Log("El enemigo ha muerto.");
+
+        if (scoreManager != null)
+        {
+            scoreManager.AddPoints(scoreValue); // Añadir puntos al ScoreManager al morir
+        }
+
+        Destroy(gameObject); // Destruir el GameObject del enemigo
     }
 }
