@@ -15,6 +15,7 @@ public class FlyingEnemy : MonoBehaviour
     private ScoreManager scoreManager; // Referencia al ScoreManager
     public int scoreValue = 10; // Puntos que otorga al ser eliminado
     public float visionRange = 5f; // Rango de visión para detectar al jugador
+    [SerializeField] bool dieFromJump = true;
 
     void Start()
     {
@@ -76,7 +77,7 @@ public class FlyingEnemy : MonoBehaviour
             Vector2 relativePosition = other.transform.position - transform.position;
 
             // Si la posición relativa en Y es positiva (el jugador está encima del enemigo)
-            if (relativePosition.y > 0)
+            if (relativePosition.y > 0 && dieFromJump)
             {
                 Die(); // Llamar al método Die para que el enemigo muera al ser pisado desde arriba
             }

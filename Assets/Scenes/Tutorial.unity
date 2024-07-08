@@ -15490,7 +15490,7 @@ Transform:
   m_GameObject: {fileID: 486156155}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 317.8, y: -36.7, z: 0}
+  m_LocalPosition: {x: 373.2, y: -36.1, z: 0}
   m_LocalScale: {x: 1.4804028, y: 1.3957672, z: 0.92045}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -26896,7 +26896,7 @@ ParticleSystem:
     m_BurstCount: 0
     m_Bursts: []
   SizeModule:
-    enabled: 0
+    enabled: 1
     curve:
       serializedVersion: 2
       minMaxState: 1
@@ -26907,18 +26907,18 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
-          outSlope: 1
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0.21621704
           inSlope: 1
-          outSlope: 0
+          outSlope: 1
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -50782,7 +50782,7 @@ ParticleSystem:
     m_BurstCount: 0
     m_Bursts: []
   SizeModule:
-    enabled: 0
+    enabled: 1
     curve:
       serializedVersion: 2
       minMaxState: 1
@@ -50793,18 +50793,18 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
-          outSlope: 1
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
           outWeight: 0.33333334
         - serializedVersion: 3
-          time: 1
-          value: 1
+          time: 0.9690857
+          value: 0
           inSlope: 1
-          outSlope: 0
+          outSlope: 1
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -54864,7 +54864,7 @@ Transform:
   m_GameObject: {fileID: 906445978}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 317.8, y: -23.7, z: -10}
+  m_LocalPosition: {x: 373.2, y: -23.099998, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -72818,7 +72818,7 @@ Transform:
   m_GameObject: {fileID: 1226929771}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 317.8, y: -23.7, z: -10}
+  m_LocalPosition: {x: 373.2, y: -23.099998, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -74359,7 +74359,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -2.5562897, y: 16.35978}
+  m_Offset: {x: -2.0333862, y: 11.18885}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -74370,7 +74370,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 6.1125793, y: 41.93622}
+  m_Size: {x: 7.158386, y: 52.278076}
   m_EdgeRadius: 0
 --- !u!1 &1309587362
 GameObject:
@@ -105182,7 +105182,7 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    separateAxes: 0
+    separateAxes: 1
   RotationModule:
     enabled: 0
     x:
@@ -110618,7 +110618,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -347.1, y: 159.1}
+  m_AnchoredPosition: {x: -503.1, y: 209.99}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.47398236, y: 0.50000006}
 --- !u!1 &1895880642
@@ -122633,6 +122633,7 @@ MonoBehaviour:
   maxHealth: 5
   scoreValue: 50
   visionRange: 50
+  dieFromJump: 0
 --- !u!212 &2001520531
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -124616,7 +124617,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 35.701, y: -36.9}
+  m_AnchoredPosition: {x: 24.999996, y: -23.400002}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2140571539
