@@ -121,6 +121,7 @@ public class InventoryManager : MonoBehaviour
         GameObject firstObject = null;
 
 
+        Debug.Log("Search ItemSprites ");
         for (int i = 0; i < itemSprites.Length; i++)
         {
             if (itemName == itemSprites[i].name)
@@ -133,6 +134,7 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
+        Debug.Log("Search PItemSprites ");
         for (int i = 0; i < permanentItemSprites.Length; i++)
         {
             if (itemName == itemSprites[i].name)
@@ -146,11 +148,13 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
+        Debug.Log("Create and assign");
         if (sp != null)
         {
             for (int i = 0; i < inventory.inventoryUse.Length; i++)
             {
-                if(inventory.inventoryUse[i].gameObject == null)
+                Debug.Log("IIU " + i);
+                if (inventory.inventoryUse[i] == null)
                 {
                     Debug.Log("Use" + inventory.inventorySlots[i]);
                     Transform item = Instantiate(itemPrefab, inventory.inventorySlots[i].transform.parent);

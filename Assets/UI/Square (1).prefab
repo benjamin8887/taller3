@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 4194614830193337435}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.3, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -59,8 +59,8 @@ Transform:
   m_GameObject: {fileID: 8206102399682490823}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.2, y: 8.6634, z: 0}
-  m_LocalScale: {x: 1, y: 0.8762204, z: 1}
+  m_LocalPosition: {x: -9.1129, y: -12.431, z: 0}
+  m_LocalScale: {x: 5.220106, y: 4.4195175, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1223531833907346135}
@@ -106,7 +106,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: 21300000, guid: 17b15470e97737f4abc51e6fe142151c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6f9571b8bfacaa04f9b00f1fe2d3da3c, type: 3}
   m_Color: {r: 0.990566, g: 0.990566, b: 0.990566, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -151,7 +151,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.74, y: 14.79}
+  m_AnchoredPosition: {x: -3.3, y: -7.4}
   m_SizeDelta: {x: 0.90311, y: 0.6882}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &3781093056720008758
@@ -217,7 +217,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Hey, \xBFqu\xE9 tal, amigo? Al parecer, algo raro est\xE1 pasando. Si
-    quieres salir de aqu\xED, necesitar\xE1s saber cosas b\xE1sicas para tu viaje"
+    quieres salir de aqu\xED, necesitar\xE1s saber cosas b\xE1sicas para tu viaje "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -226,8 +226,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278453253
-  m_fontColor: {r: 0.01886791, g: 0.01646492, b: 0.01646492, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -244,8 +244,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8
-  m_fontSizeBase: 8
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -280,7 +280,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -2.7514954, y: 0, z: -8.901082, w: -9.399417}
+  m_margin: {x: -33.03442, y: -3.8011646, z: -21.318558, w: -13.200579}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0

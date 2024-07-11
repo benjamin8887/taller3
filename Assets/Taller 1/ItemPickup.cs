@@ -13,7 +13,9 @@ public class ItemPickup : MonoBehaviour
             if (inventoryManager != null)
             {
                 inventoryManager.AddItemToInventory(item.name, amount); // Añadir el objeto al inventario
-                Destroy(gameObject); // Destruir el objeto en el mundo después de ser recogido
+                // Destroy(gameObject); // Destruir el objeto en el mundo después de ser recogido
+                // this.enable 
+                
             }
         }
     }
