@@ -25,8 +25,15 @@ public class CombinedEnemy : MonoBehaviour
             Debug.LogError("ScoreManager no encontrado en la escena.");
         }
 
-        // Encontrar al jugador al inicio
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        // Buscar al jugador al inicio
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject == null)
+        {
+            Debug.LogError("No se encontró ningún GameObject con la tag 'Player'.");
+            return;
+        }
+        player = playerObject.transform;
+
         Physics2D.IgnoreCollision(myCollider, player.GetComponent<Collider2D>());
 
         // Obtener el componente SpriteRenderer del enemigo
@@ -94,12 +101,12 @@ public class CombinedEnemy : MonoBehaviour
             else
             {
                 // Obtener el componente de salud del jugador (esto depende de cómo esté implementado en tu juego)
-                PlayerMovement player = other.GetComponent<PlayerMovement>();
+                PlayerMovement playerMovement = other.GetComponent<PlayerMovement>();
 
                 // Si el componente de salud existe, hacer daño al jugador
-                if (player != null)
+                if (playerMovement != null)
                 {
-                    player.TakeDamage(damage);
+                    playerMovement.TakeDamage(damage);
                 }
             }
         }
