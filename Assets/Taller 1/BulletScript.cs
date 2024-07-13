@@ -4,9 +4,30 @@ public class BulletScript : MonoBehaviour
 {
     public float maxDistance = 10f; // Distancia máxima antes de destruir la bala si no colisiona
     public int damage = 15; // Daño que inflige la bala
-    public float knockbackForce = 100f; // Fuerza de empuje hacia atrás
 
+    private float distanceTraveled = 0f; // Distancia recorrida por la bala
     private bool hasHit = false; // Flag para verificar si la bala ha colisionado
+    Vector2 initialPos;
+
+    private void Start()
+    {
+        initialPos = this.transform.position;
+    }
+
+    void Update()
+    {
+        // Mover la bala en la dirección del eje x
+        // transform.Translate(Vector2.right * speed * Time.deltaTime);
+
+        // Actualizar la distancia recorrida por la bala
+        // distanceTraveled += speed * Time.deltaTime;
+
+        // Destruir la bala si ha alcanzado la distancia máxima sin colisionar
+        if (!hasHit && Vector2.Distance(initialPos,this.transform.position) >= maxDistance)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -20,12 +41,6 @@ public class BulletScript : MonoBehaviour
             {
                 // Aplicar daño al enemigo
                 enemyHealth.TakeDamage(damage);
-
-                // Obtener la dirección desde la bala hacia el enemigo
-                Vector2 knockbackDirection = (other.transform.position - transform.position).normalized;
-
-                // Aplicar el knockback al enemigo
-                enemyHealth.Knockback(knockbackDirection, knockbackForce);
             }
 
             // Marcar que la bala ha impactado con un enemigo
