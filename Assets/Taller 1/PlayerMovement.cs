@@ -121,6 +121,56 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        if (died) return;
+
+        HandleMovement();
+
+        HandleAnimation();
+    }
+
+    private void HandleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && jumpsLeft > 0)
+        {
+            Jump();
+            jumpsLeft--;
+        }
+
+        if (Input.GetKeyDown(KeyCode.I) && inventoryManager != null && !inventoryManager.inventoryOpen)
+        {
+            inventoryManager.ToggleInventory();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            InteractWithMerchant();
+        }
+
+        // Movimiento vertical hacia arriba (W) y abajo (S)
+        float verticalInput = Input.GetAxis("Vertical");
+        rb.velocity = new Vector2(rb.velocity.x, verticalInput * speed);
+    }
+
+    private void HandleMovement()
+    {
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+
+        if (isGrounded)
+        {
+            jumpsLeft = extraJumps;
+        }
+
+        float moveInput = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
+
+        if ((moveInput > 0 && !facingRight) || (moveInput < 0 && facingRight))
+        {
+            Flip();
+        }
+    }
+
     private void PistolaShoot()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && currentPistolAmmo > 0)
@@ -158,68 +208,6 @@ public class PlayerMovement : MonoBehaviour
     public void FreeEscopeta()
     {
         canShootS = true;
-    }
-
-    private void FixedUpdate()
-    {
-        if (died) return;
-
-        HandleMovement();
-
-        HandleAnimation();
-    }
-
-    private void HandleInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && jumpsLeft > 0)
-        {
-            Jump();
-            jumpsLeft--;
-        }
-
-        if (Input.GetKeyDown(KeyCode.I) && inventoryManager != null && !inventoryManager.inventoryOpen)
-        {
-            inventoryManager.ToggleInventory();
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            InteractWithMerchant();
-        }
-    }
-
-    private void HandleMovement()
-    {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-
-        if (isGrounded)
-        {
-            jumpsLeft = extraJumps;
-        }
-
-        float moveInput = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
-
-        if ((moveInput > 0 && !facingRight) || (moveInput < 0 && facingRight))
-        {
-            Flip();
-        }
-    }
-
-    public void Pistola()
-    {
-        anim.SetBool("Pistola", true);
-        anim.SetBool("Escopeta", false);
-        canShoot = true;
-        canShootS = false;
-    }
-
-    public void Escopeta()
-    {
-        anim.SetBool("Pistola", false);
-        anim.SetBool("Escopeta", true);
-        canShootS = true;
-        canShoot = false;
     }
 
     private void HandleAnimation()
