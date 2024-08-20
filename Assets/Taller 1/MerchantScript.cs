@@ -7,6 +7,8 @@ public class MerchantScript : MonoBehaviour
     public Text itemNameText; // Referencia al texto para mostrar el nombre del objeto
     public Text itemPriceText; // Referencia al texto para mostrar el precio en bolsas de monedas
     public GameObject buyButton; // Referencia al botón de compra
+    public Transform player; // Referencia al transform del jugador para determinar su posición
+    public SpriteRenderer merchantSpriteRenderer; // Referencia al SpriteRenderer del mercader
 
     private bool isShopOpen = false;
 
@@ -21,6 +23,23 @@ public class MerchantScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) && isShopOpen)
         {
             CloseShop();
+        }
+
+        // Voltear el mercader para mirar al jugador
+        if (player != null && merchantSpriteRenderer != null)
+        {
+            Vector3 directionToPlayer = player.position - transform.position;
+            // Determina si el jugador está a la izquierda o derecha del mercader
+            if (directionToPlayer.x > 0)
+            {
+                // El jugador está a la derecha del mercader
+                merchantSpriteRenderer.flipX = false;
+            }
+            else
+            {
+                // El jugador está a la izquierda del mercader
+                merchantSpriteRenderer.flipX = true;
+            }
         }
     }
 

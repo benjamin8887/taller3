@@ -198,7 +198,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
         float moveInput = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
+        float moveInputY = Input.GetAxis("Vertical");
+
+        rb.velocity = new Vector2(moveInput * speed, moveInputY * speed);
 
         if ((moveInput > 0 && !facingRight) || (moveInput < 0 && facingRight))
         {
@@ -224,7 +226,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleAnimation()
     {
-        if (Mathf.Abs(rb.velocity.x) > 0.1f)
+        if (Mathf.Abs(rb.velocity.x) > 0.1f || Mathf.Abs(rb.velocity.y) > 0.1f)
         {
             anim.SetBool("Pistola", false);
             anim.SetBool("Escopeta", false);
